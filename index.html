@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
@@ -294,7 +294,7 @@
           // --- 認証コード一致判定（未入力も不一致扱い） ---
           if (code !== "dmp937402") {
             alert(
-              "認証コードが正しくありません。ご確認のうえ、再度ご入力ください。"
+              "認証コードが正しくありません。ご確認のうえ、再度ご入力ください。",
             );
             authInput.value = ""; // 入力欄リセット
             return; // そのまま画面に留まる
@@ -395,9 +395,12 @@
               <h3 style="padding-top: 5em;">3.　研究への参加について</h3>
                 <p>　本研究への参加は任意であり、参加に同意しない場合でも問題ありません。また、同意は研究実施期間中であればいつでも不利益を受けずに撤回できます。</p>
               <h3 style="padding-top: 5em;">4.　この研究に関する問い合わせ先</h3>
-                <p>〈研究者連絡先〉</p>
-                <p>森川 大伸　創価大学教育学部教育学科・4年生
-                  <br>東京都八王子市丹木町1-236　メールアドレス：<span id="emailConsent"></span></p>
+                <p>〈研究実施者〉</p>
+                <p>森川 大伸　創価大学教育学部教育学科
+                  <br>東京都八王子市丹木町1-236</p>
+                <p>〈研究責任者〉</p>
+                <p>飯村 周平　創価大学教育学部教育学科
+                  <br>東京都八王子市丹木町1-236　メール：<span id="emailConsent"></span></p>
               <h3 class="no-underline" style="padding-top: 5em;">■ 以下の項目について理解できたかどうか、当てはまる選択肢にチェックを付けてください。</h3>
           </div>`,
       questions: questionsIC
@@ -425,7 +428,7 @@
       button_label: "次へ",
       on_load: () => {
         const el = document.getElementById("emailConsent");
-        if (el) el.textContent = "e2226103" + "@" + "soka-u.jp";
+        if (el) el.textContent = "iimurashuhei" + "@" + "gmail.com";
       },
     };
 
@@ -466,12 +469,14 @@
                 <p>研究へのご協力ありがとうございました。</p>
                 <p>タブを閉じると終了できます。</p>
                 <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
-                <p>森川 大伸（メール：<span id="emailNotNativeLanguage"></span>）</p>
+                <p>研究実施者：森川 大伸</p>
+                <p>研究責任者：飯村 周平
+                  <br>（メール：<span id="emailNotNativeLanguage"></span>）</p>
               `,
           choices: "NO KEYS",
           on_load: () => {
             const el = document.getElementById("emailNotNativeLanguage");
-            if (el) el.textContent = "e2226103" + "@" + "soka-u.jp";
+            if (el) el.textContent = "iimurashuhei" + "@" + "gmail.com";
           },
         },
       ],
@@ -498,12 +503,14 @@
                 <p>研究へのご協力ありがとうございました。</p>
                 <p>タブを閉じると終了できます。</p>
                 <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
-                <p>森川 大伸（メール：<span id="emailNotConsented"></span>）</p>
+                <p>研究実施者：森川 大伸</p>
+                <p>研究責任者：飯村 周平
+                  <br>（メール：<span id="emailNotConsented"></span>）</p>
               `,
           choices: "NO KEYS",
           on_load: () => {
             const el = document.getElementById("emailNotConsented");
-            if (el) el.textContent = "e2226103" + "@" + "soka-u.jp";
+            if (el) el.textContent = "iimurashuhei" + "@" + "gmail.com";
           },
         },
       ],
@@ -530,11 +537,11 @@
           shouldEndNotConsented = true;
         } else {
           const hasNo = questionsIC.some(
-            (q) => data.response[q.name] !== "はい"
+            (q) => data.response[q.name] !== "はい",
           );
           if (hasNo) {
             alert(
-              "「いいえ」を選択した項目がある一方で、研究への参加に「同意する」と回答しています。ご理解いただいているか再確認のうえ、再度ご回答ください。"
+              "「いいえ」を選択した項目がある一方で、研究への参加に「同意する」と回答しています。ご理解いただいているか再確認のうえ、再度ご回答ください。",
             );
           }
         }
@@ -648,7 +655,7 @@
 
         function convertFullwidthDigits(str) {
           return str.replace(/[０-９]/g, (s) =>
-            String.fromCharCode(s.charCodeAt(0) - 0xfee0)
+            String.fromCharCode(s.charCodeAt(0) - 0xfee0),
           );
         }
 
@@ -741,7 +748,7 @@
             if (!ageEmpty && genderEmpty) {
               if (!/^\d+$/.test(ageValue)) {
                 alert(
-                  "年齢は半角数字を使用し、18以上60以下の整数で入力してください。"
+                  "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
                 );
                 ageInput.value = "";
                 return;
@@ -749,7 +756,7 @@
               const ageNum = parseInt(ageValue, 10);
               if (!Number.isInteger(ageNum) || ageNum < 18 || ageNum > 60) {
                 alert(
-                  "年齢は半角数字を使用し、18以上60以下の整数で入力してください。"
+                  "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
                 );
                 ageInput.value = "";
                 return;
@@ -762,8 +769,8 @@
               const ageToSave = ageEmpty
                 ? ""
                 : /^\d+$/.test(ageValue)
-                ? parseInt(ageValue, 10)
-                : "";
+                  ? parseInt(ageValue, 10)
+                  : "";
               jsPsych.finishTrial({
                 response: { id: idValue, age: ageToSave, gender: genderValue },
               });
@@ -773,7 +780,7 @@
 
           if (!/^\d+$/.test(ageValue)) {
             alert(
-              "年齢は半角数字を使用し、18以上60以下の整数で入力してください。"
+              "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
             );
             ageInput.value = "";
             return;
@@ -782,7 +789,7 @@
           const ageNum = parseInt(ageValue, 10);
           if (!Number.isInteger(ageNum) || ageNum < 18 || ageNum > 60) {
             alert(
-              "年齢は半角数字を使用し、18以上60以下の整数で入力してください。"
+              "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
             );
             ageInput.value = "";
             return;
@@ -860,7 +867,7 @@
       on_load: function () {
         // --- HSP の全ラジオボタンに「再クリックで選択解除」を追加 ---
         const allHspRadios = document.querySelectorAll(
-          '.jspsych-survey-multi-choice-question input[type="radio"]'
+          '.jspsych-survey-multi-choice-question input[type="radio"]',
         );
 
         allHspRadios.forEach((r) => {
@@ -873,7 +880,7 @@
               // 他のラジオのチェック状態を初期化
               const name = this.name;
               const sameGroup = document.querySelectorAll(
-                `input[name="${name}"]`
+                `input[name="${name}"]`,
               );
               sameGroup.forEach((x) => (x.dataset.wasChecked = "false"));
               this.dataset.wasChecked = "true";
@@ -883,7 +890,7 @@
 
         // submit ボタン要素を取得（プラグインが描画したボタン）
         const submitBtn = document.querySelector(
-          ".jspsych-survey-multi-choice button[type='submit'], .jspsych-btn"
+          ".jspsych-survey-multi-choice button[type='submit'], .jspsych-btn",
         );
         // safety: もし複数候補ある場合は最初のものを使う
         if (!submitBtn) return;
@@ -904,7 +911,7 @@
             // DOM に生成される各質問の name（jsPsych の仕様）
             const domName = `jspsych-survey-multi-choice-response-${i}`;
             const sel = document.querySelector(
-              `input[name="${domName}"]:checked`
+              `input[name="${domName}"]:checked`,
             );
             if (!sel) {
               missing = true;
@@ -1073,7 +1080,7 @@
       }
       // もし十分な試行で見つからなければ、最後のシャッフルを返す（ただし理想的ではない）
       console.warn(
-        "shuffleNoConsecSameCatNum: valid ordering not found within attempts"
+        "shuffleNoConsecSameCatNum: valid ordering not found within attempts",
       );
       return shuffle(items.slice());
     }
@@ -1170,7 +1177,7 @@
       }
       if (!boundaryOk) {
         console.warn(
-          "Boundary constraint could not be fully satisfied after attempts"
+          "Boundary constraint could not be fully satisfied after attempts",
         );
       }
 
@@ -1402,15 +1409,17 @@
       type: jsPsychHtmlKeyboardResponse,
       stimulus: `
           <h3>回答の送信が正常に完了しました。</h3>
-          <p>研究へのご協力ありがとうございました。</p>
-          <p>タブを閉じると終了できます。</p>
-          <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
-          <p>森川 大伸（メール：<span id="emailEnd"></span>）</p>
+            <p>研究へのご協力ありがとうございました。</p>
+            <p>タブを閉じると終了できます。</p>
+            <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
+            <p>研究実施者：森川 大伸</p>
+            <p>研究責任者：飯村 周平
+              <br>（メール：<span id="emailEnd"></span>）</p>
         `,
       choices: "NO_KEYS",
       on_load: () => {
         const el = document.getElementById("emailEnd");
-        if (el) el.textContent = "e2226103" + "@" + "soka-u.jp";
+        if (el) el.textContent = "iimurashuhei" + "@" + "gmail.com";
       },
     };
 
