@@ -262,7 +262,6 @@
     let participantID = null; // 通常完了者のみ後で入る
     const filename = () => `${participantID}_${subjectID}.csv`;
     const filenameNotConsented = `non-consented_${subjectID}.csv`;
-    const filenameNotNativeLanguage = `non-native_${subjectID}.csv`;
 
     // ======================
     // 認証コード入力画面（一致・不一致のみ判定）
@@ -330,13 +329,11 @@
       choices: ["調査へ進む"],
     };
 
-    let consentFinalAnswer;
-
     const questionsIC = [
       { prompt: "研究の意義、目的、方法など", name: "consent_1" },
       { prompt: "研究成果の公表の可能性", name: "consent_2" },
       {
-        prompt: "収集するデータの種類、収集方法、機関、所要時間など",
+        prompt: "収集するデータの種類、収集方法、期間、所要時間など",
         name: "consent_3",
       },
       { prompt: "対象者に選ばれた理由", name: "consent_4" },
@@ -387,20 +384,13 @@
                 <h4>(3)　収集するデータの種類、収集方法、期間、所要時間など</h4>
                   <p>　この研究では、PC上で主に2種類のデータを収集いたします。1点目に、いくつかの質問項目にご回答いただくことで得られる調査データです。2点目に、実験で提示される画像を選択していただくことで得られる実験データです。データの収集は1回のみで、2026年月2月頃に行われます。研究参加にかかる所要時間はおよそ40分です。</p>
                 <h4>(4)　対象者に選ばれた理由</h4>
-                  <p>　この研究では、日本語母語話者のうち、18～60歳の方を対象に研究協力者を募集することにしました。</p>
+                  <p>　この研究では、日本語母語話者のうち、20～65歳の方を対象に研究協力者を募集することにしました。</p>
                 <h4>(5)　研究に参加することにより予測される対象者にとって、また社会にとっての利益</h4>
                   <p>　この研究の実施によって、主に美術鑑賞における美的感覚のメカニズムに関する手がかりが得られることが期待されます。</p>
               <h3 style="padding-top: 5em;">2.　個人データの取り扱いについて</h3>
                 <p>　得られたデータは成果公表後、最低10年間保管され、その後破棄されます。データは、インターネットに接続されないPCにてパスワードを設定したうえで保管します。また、得られたデータはすべて匿名であり、個人情報を特定する情報は含まれませんのでご安心して研究にご参加いただけます。</p>
               <h3 style="padding-top: 5em;">3.　研究への参加について</h3>
                 <p>　本研究への参加は任意であり、参加に同意しない場合でも問題ありません。また、同意は研究実施期間中であればいつでも不利益を受けずに撤回できます。</p>
-              <h3 style="padding-top: 5em;">4.　この研究に関する問い合わせ先</h3>
-                <p>〈研究実施者〉</p>
-                <p>森川 大伸　創価大学教育学部教育学科
-                  <br>東京都八王子市丹木町1-236</p>
-                <p>〈研究責任者〉</p>
-                <p>飯村 周平　創価大学教育学部教育学科
-                  <br>東京都八王子市丹木町1-236　メール：<span id="emailConsent"></span></p>
               <h3 class="no-underline" style="padding-top: 5em;">■ 以下の項目について理解できたかどうか、当てはまる選択肢にチェックを付けてください。</h3>
           </div>`,
       questions: questionsIC
@@ -412,14 +402,9 @@
         }))
         .concat([
           {
-            prompt: `<span style='font-size: 1.17em; font-weight: bold; margin-top: 5em; display: inline-block;'>■ あなたは日本語母語話者ですか？ / If Japanese is not your native language, please select "No".</span>`,
-            name: "native_language",
-            options: ["はい / Yes", "いいえ / No"],
-            required: true,
-          },
-          {
             prompt:
               "<span style='font-size: 1.17em; font-weight: bold; margin-top: 5em; display: inline-block;'>■ 調査趣旨を理解したうえで、あなたはこの研究に参加することに同意しますか？</span>",
+            name: "consent_final",
             name: "consent_final",
             options: ["はい", "いいえ"],
             required: true,
@@ -432,14 +417,6 @@
       },
     };
 
-    const saveDataNotNativeLanguage = {
-      type: jsPsychPipe,
-      action: "save",
-      experiment_id: "＿＿＿", // DataPipeよりIDを取得
-      filename: filenameNotNativeLanguage,
-      data_string: () => jsPsych.data.get().csv(),
-    };
-
     const saveDataNotConsented = {
       type: jsPsychPipe,
       action: "save",
@@ -448,42 +425,7 @@
       data_string: () => jsPsych.data.get().csv(),
     };
 
-    let shouldEndNotNativeLanguage = false;
     let shouldEndNotConsented = false;
-
-    const endIfNotNativeLanguage = {
-      timeline: [
-        {
-          type: jsPsychHtmlButtonResponse,
-          stimulus: `
-              <h3>本研究は日本語母語話者を対象としているため、ここで終了します。</h3>
-                <p>ボタンを押して回答を送信し、完了するまでそのままお待ちください。</p>
-              `,
-          choices: ["回答を送信"],
-        },
-        saveDataNotNativeLanguage,
-        {
-          type: jsPsychHtmlKeyboardResponse,
-          stimulus: `
-              <h3>回答の送信が正常に完了しました。</h3>
-                <p>研究へのご協力ありがとうございました。</p>
-                <p>タブを閉じると終了できます。</p>
-                <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
-                <p>研究実施者：森川 大伸</p>
-                <p>研究責任者：飯村 周平
-                  <br>（メール：<span id="emailNotNativeLanguage"></span>）</p>
-              `,
-          choices: "NO KEYS",
-          on_load: () => {
-            const el = document.getElementById("emailNotNativeLanguage");
-            if (el) el.textContent = "iimurashuhei" + "@" + "gmail.com";
-          },
-        },
-      ],
-      conditional_function: function () {
-        return shouldEndNotNativeLanguage;
-      },
-    };
 
     const endIfNotConsented = {
       timeline: [
@@ -502,10 +444,6 @@
               <h3>回答の送信が正常に完了しました。</h3>
                 <p>研究へのご協力ありがとうございました。</p>
                 <p>タブを閉じると終了できます。</p>
-                <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
-                <p>研究実施者：森川 大伸</p>
-                <p>研究責任者：飯村 周平
-                  <br>（メール：<span id="emailNotConsented"></span>）</p>
               `,
           choices: "NO KEYS",
           on_load: () => {
@@ -519,21 +457,11 @@
       },
     };
 
-    function getLastConsentResponse() {
-      const consentTrials = jsPsych.data
-        .get()
-        .filter({ consent_type: "check" })
-        .values();
-      return consentTrials[consentTrials.length - 1]?.response || {};
-    }
-
     const informedConsentCheck = {
       ...informedConsent,
       data: { consent_type: "check" },
       on_finish: function (data) {
-        if (data.response.native_language === "いいえ / No") {
-          shouldEndNotNativeLanguage = true;
-        } else if (data.response.consent_final === "いいえ") {
+        if (data.response.consent_final === "いいえ") {
           shouldEndNotConsented = true;
         } else {
           const hasNo = questionsIC.some(
@@ -549,11 +477,7 @@
     };
 
     const consentLoop = {
-      timeline: [
-        informedConsentCheck,
-        endIfNotNativeLanguage,
-        endIfNotConsented,
-      ],
+      timeline: [informedConsentCheck, endIfNotConsented],
       loop_function: function () {
         const consentTrials = jsPsych.data
           .get()
@@ -564,7 +488,7 @@
         const lastConsent =
           consentTrials[consentTrials.length - 1].response || {};
 
-        if (shouldEndNotNativeLanguage || shouldEndNotConsented) return false;
+        if (shouldEndNotConsented) return false;
 
         const hasNo = questionsIC.some((q) => lastConsent[q.name] !== "はい");
         return hasNo;
@@ -573,7 +497,6 @@
 
     const afterImformedConsentCheck = {
       timeline: [
-        endIfNotNativeLanguage,
         endIfNotConsented,
         {
           timeline: [consentLoop],
@@ -583,9 +506,10 @@
               .filter({ consent_type: "check" })
               .values();
             if (consentTrials.length === 0) return false;
+
             const resp = consentTrials[consentTrials.length - 1].response || {};
-            if (shouldEndNotNativeLanguage || shouldEndNotConsented)
-              return false;
+            if (shouldEndNotConsented) return false;
+
             return questionsIC.some((q) => resp[q.name] !== "はい");
           },
         },
@@ -621,7 +545,7 @@
                   style="width: 100px; height: 25px; font-size: 16px;" maxlength="4"/>
               </div>
 
-              <p><b>年齢</b>（半角数字を使用し、18以上60以下の整数で入力してください）</p>
+              <p><b>年齢</b>（半角数字を使用し、20以上66以下の整数で入力してください）</p>
               <div style="display: flex; align-items: center;">
                 <input id="ageInput" type="text" inputmode="numeric" placeholder="例：20"
                   style="width: 100px; height: 25px; font-size: 16px;" maxlength="2"/>
@@ -748,15 +672,15 @@
             if (!ageEmpty && genderEmpty) {
               if (!/^\d+$/.test(ageValue)) {
                 alert(
-                  "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
+                  "年齢は半角数字を使用し、20以上66以下の整数で入力してください。",
                 );
                 ageInput.value = "";
                 return;
               }
               const ageNum = parseInt(ageValue, 10);
-              if (!Number.isInteger(ageNum) || ageNum < 18 || ageNum > 60) {
+              if (!Number.isInteger(ageNum) || ageNum < 20 || ageNum > 66) {
                 alert(
-                  "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
+                  "年齢は半角数字を使用し、20以上66以下の整数で入力してください。",
                 );
                 ageInput.value = "";
                 return;
@@ -780,16 +704,16 @@
 
           if (!/^\d+$/.test(ageValue)) {
             alert(
-              "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
+              "年齢は半角数字を使用し、20以上66以下の整数で入力してください。",
             );
             ageInput.value = "";
             return;
           }
 
           const ageNum = parseInt(ageValue, 10);
-          if (!Number.isInteger(ageNum) || ageNum < 18 || ageNum > 60) {
+          if (!Number.isInteger(ageNum) || ageNum < 20 || ageNum > 66) {
             alert(
-              "年齢は半角数字を使用し、18以上60以下の整数で入力してください。",
+              "年齢は半角数字を使用し、20以上66以下の整数で入力してください。",
             );
             ageInput.value = "";
             return;
@@ -1290,16 +1214,6 @@
       return imgs;
     }
 
-    function shuffle(array) {
-      let current = array.length;
-      while (current !== 0) {
-        const r = Math.floor(Math.random() * current);
-        current--;
-        [array[current], array[r]] = [array[r], array[current]];
-      }
-      return array;
-    }
-
     const allImages = shuffle(buildImageList());
 
     const vasQuestions = [
@@ -1411,10 +1325,6 @@
           <h3>回答の送信が正常に完了しました。</h3>
             <p>研究へのご協力ありがとうございました。</p>
             <p>タブを閉じると終了できます。</p>
-            <p style="font-weight: bold; padding-top: 3em;">問い合わせ先</p>
-            <p>研究実施者：森川 大伸</p>
-            <p>研究責任者：飯村 周平
-              <br>（メール：<span id="emailEnd"></span>）</p>
         `,
       choices: "NO_KEYS",
       on_load: () => {
